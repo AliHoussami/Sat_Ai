@@ -27,11 +27,11 @@ import hashlib
 
 app = Flask(__name__)
 CORS(app)
-# Set up logging
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# MySQL Configuration
+
 db_config = {
     'host': 'localhost',
     'user': 'root',
@@ -39,12 +39,12 @@ db_config = {
     'database': 'sat_prep'
 }
 
-# Function to connect to the database
+
 def get_db_connection():
     conn = mysql.connector.connect(**db_config)
     return conn, conn.cursor(dictionary=True)
 
-# Define paths to SAT materials
+
 SAT_MATERIALS = {
 
 
@@ -61,7 +61,7 @@ def register():
     username = data.get('username', '')
     password = data.get('password', '')
     
-    # Validate inputs
+    
     if not username or not password:
         return jsonify({'error': 'Username and password are required'}), 400
     
@@ -71,14 +71,14 @@ def register():
     if len(password) < 6:
         return jsonify({'error': 'Password must be at least 6 characters long'}), 400
     
-    # Check if username contains valid characters
+    
     if not re.match(r'^[a-zA-Z0-9_]+$', username):
         return jsonify({'error': 'Username can only contain letters, numbers, and underscores'}), 400
     
     try:
         conn, cursor = get_db_connection()
         
-        # Check if username already exists
+        
         cursor.execute("SELECT user_id FROM users WHERE username = %s", (username,))
         existing_user = cursor.fetchone()
         
@@ -87,19 +87,19 @@ def register():
             conn.close()
             return jsonify({'error': 'Username already exists'}), 400
         
-        # Hash the password for storage
+        
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
         
-        # Insert new user
+        
         cursor.execute(
             "INSERT INTO users (username, password) VALUES (%s, %s)",
             (username, hashed_password)
         )
         
-        # Get the new user ID
+        
         user_id = cursor.lastrowid
         
-        # Initialize empty weak_areas
+        
         cursor.execute(
             "UPDATE users SET weak_areas = '' WHERE user_id = %s",
             (user_id,)
@@ -109,7 +109,7 @@ def register():
         cursor.close()
         conn.close()
         
-        # Return user info
+        
         return jsonify({
             'success': True,
             'user_id': user_id,
@@ -127,17 +127,17 @@ def login():
     username = data.get('username', '')
     password = data.get('password', '')
     
-    # Validate inputs
+    
     if not username or not password:
         return jsonify({'error': 'Username and password are required'}), 400
     
     try:
         conn, cursor = get_db_connection()
         
-        # Hash the provided password for comparison
+        
         hashed_password = hashlib.sha256(password.encode()).hexdigest()
         
-        # Find user with matching username and password
+        
         cursor.execute(
             "SELECT user_id, username, weak_areas FROM users WHERE username = %s AND password = %s",
             (username, hashed_password)
@@ -150,7 +150,7 @@ def login():
         if not user:
             return jsonify({'error': 'Invalid username or password'}), 401
         
-        # Return user data
+        
         return jsonify({
             'success': True,
             'user_id': user['user_id'],
@@ -162,14 +162,14 @@ def login():
         logger.error(f"Error in user login: {str(e)}")
         return jsonify({'error': 'Login failed'}), 500
 
-# Enhanced Vector Database class with improved chunking and search
+
 class VectorDatabase:
     def __init__(self):
         self.documents = []
         self.embeddings = None
         self.document_type = []
         self.section_info = []
-        # Initialize the embedding model with a better model
+        
         self.embedding_model = SentenceTransformer('all-mpnet-base-v2')
         logger.info("Initialized VectorDatabase with all-mpnet-base-v2 model")
         
@@ -179,7 +179,7 @@ class VectorDatabase:
             logger.warning(f"Skipping empty document with type={doc_type}, section={section}")
             return
             
-        # Use improved chunking with SAT structure awareness
+        
         chunks = self.chunk_sat_content(text, doc_type, section)
         
         original_doc_count = len(self.documents)
@@ -191,7 +191,7 @@ class VectorDatabase:
         new_doc_count = len(self.documents)
         logger.info(f"Added {new_doc_count - original_doc_count} chunks from document")
         
-        # Update embeddings
+        
         self._update_embeddings()
     
     def chunk_sat_content(self, text, doc_type, section, max_chunk_size=256, overlap=50):
@@ -201,41 +201,41 @@ class VectorDatabase:
         """
         chunks = []
         
-        # Extract metadata from section
+        
         test_num = "unknown"
         section_type = "general"
         
-        # Extract test number from section
+        
         test_match = re.search(r"Test\s+(\d+)", section)
         if test_match:
             test_num = test_match.group(1)
         
-        # Determine section type
+        
         if "Math" in section:
             section_type = "Math"
         elif "Reading" in section or "Writing" in section:
             section_type = "Reading and Writing"
         
-        # For practice tests, try to preserve question structure
+        
         if doc_type == "practice_test" and "QUESTION" in text:
-            # Split by questions
+            
             q_chunks = re.split(r"(QUESTION\s+\d+)", text)
             
-            # Skip the first empty chunk if it exists
+            
             if q_chunks and not q_chunks[0].strip():
                 q_chunks = q_chunks[1:]
                 
-            # Recombine question headers with their content
+            
             for i in range(0, len(q_chunks)-1, 2):
                 if i+1 < len(q_chunks):
                     q_header = q_chunks[i]
                     q_content = q_chunks[i+1]
                     
-                    # Extract question number
+                    
                     q_num_match = re.search(r"QUESTION\s+(\d+)", q_header)
                     q_num = q_num_match.group(1) if q_num_match else "unknown"
                     
-                    # Create metadata-rich chunk
+                    
                     enhanced_chunk = f"""
 SAT Practice Test {test_num} - {section}
 Test Number: {test_num}
@@ -257,32 +257,32 @@ Section Type: {section_type}
                         }
                     })
                     
-            # If we successfully processed questions, return the chunks
+            
             if chunks:
                 return chunks
         
-        # For answer documents, try to preserve answer structure
+        
         if doc_type == "answers" and "QUESTION" in text:
-            # Split by questions similar to above
+            
             explanation_chunks = re.split(r"(QUESTION\s+\d+)", text)
             
-            # Skip the first empty chunk if it exists
+            
             if explanation_chunks and not explanation_chunks[0].strip():
                 explanation_chunks = explanation_chunks[1:]
             
-            # Process similar to above
+            
             for i in range(0, len(explanation_chunks)-1, 2):
                 if i+1 < len(explanation_chunks):
                     explanation_header = explanation_chunks[i]
                     explanation_content = explanation_chunks[i+1]
                     
-                    # Only create chunks that are meaningful
+                    
                     if len(explanation_content.strip()) > 50:
-                        # Extract question number
+                        
                         q_num_match = re.search(r"QUESTION\s+(\d+)", explanation_header)
                         q_num = q_num_match.group(1) if q_num_match else "unknown"
                         
-                        # Create metadata-rich chunk
+                        
                         enhanced_chunk = f"""
 SAT Practice Test {test_num} - Answer Explanation
 Test Number: {test_num}
@@ -304,11 +304,11 @@ Section Type: {section_type}
                             }
                         })
             
-            # If we successfully processed answer explanations, return the chunks
+            
             if chunks:
                 return chunks
         
-        # Default chunking by paragraphs with overlap for any other content type
+        
         paragraphs = re.split(r"\n\s*\n", text)
         
         current_chunk = []
@@ -321,9 +321,9 @@ Section Type: {section_type}
                 
             paragraph_size = len(paragraph)
             
-            # If adding this paragraph would exceed the limit
+            
             if current_chunk_size + paragraph_size > max_chunk_size and current_chunk:
-                # Create enhanced chunk with metadata
+                
                 enhanced_chunk = f"""
 SAT Practice Test {test_num} - {section}
 Test Number: {test_num}
@@ -344,7 +344,7 @@ Section Type: {section_type}
                     }
                 })
                 
-                # Create overlap for next chunk - keep last 2 paragraphs
+                
                 if len(current_chunk) > 2 and overlap > 0:
                     current_chunk = current_chunk[-2:]
                     current_chunk_size = sum(len(p) for p in current_chunk)
@@ -352,13 +352,13 @@ Section Type: {section_type}
                     current_chunk = []
                     current_chunk_size = 0
             
-            # Add paragraph to current chunk
+            
             current_chunk.append(paragraph + "\n\n")
             current_chunk_size += paragraph_size
         
-        # Add the last chunk if it exists
+        
         if current_chunk:
-            # Create enhanced chunk with metadata
+            
             enhanced_chunk = f"""
 SAT Practice Test {test_num} - {section}
 Test Number: {test_num}
@@ -402,24 +402,24 @@ Section Type: {section_type}
             
         logger.info(f"Searching for query: '{query}', type={doc_type}, section={section}")
         
-        # 1. Exact match search (highest priority)
+        
         exact_matches = []
         query_lower = query.lower().strip()
         query_keywords = query_lower.split()
         
-        # Look for exact matches and keyword matches
+        
         for i, doc in enumerate(self.documents):
-            # Skip if doc_type filter doesn't match
+            
             if doc_type and not (doc_type.lower() in self.document_type[i].lower()):
                 continue
             
-            # Skip if section filter doesn't match
+            
             if section and section not in self.section_info[i]:
                 continue
             
             doc_lower = doc.lower()
             
-            # Direct equality (exact match) - perfect similarity
+            
             if query_lower == doc_lower:
                 exact_matches.append({
                     "text": doc,
@@ -430,7 +430,7 @@ Section Type: {section_type}
                 })
                 continue
             
-            # Contains full query as substring - very high similarity
+            
             if query_lower in doc_lower:
                 exact_matches.append({
                     "text": doc,
@@ -441,7 +441,7 @@ Section Type: {section_type}
                 })
                 continue
                 
-            # All keywords present - high similarity
+            
             if all(keyword in doc_lower for keyword in query_keywords):
                 exact_matches.append({
                     "text": doc,
@@ -452,11 +452,11 @@ Section Type: {section_type}
                 })
                 continue
         
-        # 2. Vector search
+        
         query_embedding = self.embedding_model.encode([query])[0]
         similarities = cosine_similarity([query_embedding], self.embeddings)[0]
         
-        # Create list of vector results
+        
         vector_results = []
         for i, sim in enumerate(similarities):
             # Skip if doc_type filter doesn't match
@@ -475,17 +475,17 @@ Section Type: {section_type}
                 "match_type": "vector"
             })
         
-        # Sort vector results
+        
         vector_results.sort(key=lambda x: x["similarity"], reverse=True)
         
-        # 3. Combine results with exact matches first
+        
         all_results = exact_matches + vector_results
         
-        # 4. Remove duplicates and take top_k
+        
         seen_texts = set()
         unique_results = []
         for result in all_results:
-            # Use first 100 chars as a signature to avoid duplicates
+            
             text_sig = result["text"][:100]
             if text_sig not in seen_texts:
                 seen_texts.add(text_sig)
@@ -493,7 +493,7 @@ Section Type: {section_type}
                 if len(unique_results) >= top_k:
                     break
         
-        # Log search results
+        
         if unique_results:
             logger.info(f"Top search result similarity: {unique_results[0]['similarity']:.4f}")
             logger.info(f"Top result match type: {unique_results[0].get('match_type', 'unknown')}")
@@ -507,10 +507,10 @@ Section Type: {section_type}
         """Add exact match documents for key search terms"""
         logger.info("Adding exact match documents for key search terms")
         
-        # Test numbers to create exact match documents for
+        
         test_numbers = ['4', '5', '6', '7', '8', '9', '10']
         
-        # Add exact match documents for general terms
+        
         self.add_document(
             f"""SAT MATH SECTION SAT MATH SECTION SAT MATH SECTION
                 This document contains the exact search term: SAT MATH SECTION
@@ -529,9 +529,9 @@ Section Type: {section_type}
             section="Reading and Writing"
         )
         
-        # Add test-specific exact match documents
+        
         for test_num in test_numbers:
-            # Math section documents
+            
             self.add_document(
                 f"""Test {test_num} math Test {test_num} math Test {test_num} math
                     This document contains the exact search term: Test {test_num} math
@@ -541,7 +541,7 @@ Section Type: {section_type}
                 section=f"Test {test_num} - Math"
             )
             
-            # Reading section documents
+            
             self.add_document(
                 f"""Test {test_num} reading Test {test_num} reading Test {test_num} reading
                     This document contains the exact search term: Test {test_num} reading
