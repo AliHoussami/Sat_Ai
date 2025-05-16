@@ -1,0 +1,1105 @@
+from flask import Flask, request, jsonify
+import mysql.connector
+import requests
+from flask_cors import CORS
+import json
+import re
+import os
+import numpy as np
+from PIL import Image
+import matplotlib.pyplot as plt
+import io
+import base64
+import fitz  # PyMuPDF
+import pandas as pd
+import logging
+import openai
+from openai import OpenAI
+
+
+app = Flask(__name__)
+CORS(app)
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+  # Enable CORS for all routes
+
+# MySQL Configuration
+db_config = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': 'Alinx123@',  # Your actual MySQL password
+    'database': 'sat_prep'
+}
+
+# Function to connect to the database
+def get_db_connection():
+    conn = mysql.connector.connect(**db_config)
+    return conn, conn.cursor(dictionary=True)
+
+# Define paths to SAT materials
+SAT_MATERIALS = {
+    'practice_test_4': 'sat-practice-test-4-digital.pdf',
+    'answers_4': 'sat-practice-test-4-answers-digital.pdf',
+    'scoring_4': 'scoring-sat-practice-test-4-digital.pdf',
+    
+    'practice_test_5': 'sat-practice-test-5-digital.pdf',
+    'answers_5': 'sat-practice-test-5-answers-digital.pdf',
+    'scoring_5': 'scoring-sat-practice-test-5-digital.pdf',
+    
+    'practice_test_6': 'sat-practice-test-6-digital.pdf',
+    'answers_6': 'sat-practice-test-6-answers-digital.pdf',
+    'scoring_6': 'scoring-sat-practice-test-6-digital.pdf',
+
+    'practice_test': 'sat-practice-test-7-digital.pdf',
+    'answers': 'sat-practice-test-7-answers-digital.pdf',
+    'scoring': 'scoring-sat-practice-test-7-digital.pdf',
+
+    'practice_test_8':'sat-practice-test-8-digital.pdf',
+    'answers_8': 'sat-practice-test-8-answers-digital.pdf',
+    'scoring_8': 'scoring-sat-practice-test-8-digital.pdf',
+    
+    'practice_test_9': 'sat-practice-test-9-digital.pdf',
+    'answers_9': 'sat-practice-test-9-answers-digital.pdf',
+    'scoring_9': 'scoring-sat-practice-test-9-digital.pdf',
+
+    'practice_test_10': 'sat-practice-test-10-digital.pdf',
+    'answers_10': 'sat-practice-test-10-answers-digital.pdf',
+    'scoring_10': 'scoring-sat-practice-test-10-digital.pdf',
+}
+
+# Extract text from PDF
+def extract_text_from_pdf(pdf_path):
+    """Extract text and identify sections from PDF"""
+    if not os.path.exists(pdf_path):
+        logger.error(f"PDF file not found: {pdf_path}")
+        return []
+    
+    sections = []
+    try:
+        doc = fitz.open(pdf_path)
+        for page_num, page in enumerate(doc):
+            text = page.get_text()
+            # Try to identify section headers
+            lines = text.split('\n')
+            current_section = f"Page {page_num+1}"
+            
+            # Look for section markers
+            for line in lines:
+                if re.match(r'^Module\s+\d+', line):
+                    current_section = line.strip()
+                elif "QUESTION" in line and re.search(r'\d+', line):
+                    current_section = line.strip()
+            
+            sections.append({
+                "text": text,
+                "section": current_section,
+                "page": page_num + 1
+            })
+        
+        return sections
+    except Exception as e:
+        logger.error(f"Error extracting text from PDF: {e}")
+        return []
+
+# Extract tables from PDF
+def extract_tables_from_pdf(pdf_path):
+    """Extract tables from PDF using visual detection"""
+    if not os.path.exists(pdf_path):
+        return []
+    
+    tables = []
+    try:
+        doc = fitz.open(pdf_path)
+        for page_num, page in enumerate(doc):
+            # Get page text
+            text = page.get_text()
+            
+            # Look for table indicators
+            if any(indicator in text for indicator in ["Table", "table", "Column", "column", "Row", "row"]):
+                # Extract a screenshot of this page
+                pix = page.get_pixmap(matrix=fitz.Matrix(300/72, 300/72))
+                img_data = pix.tobytes("png")
+                
+                tables.append({
+                    "page": page_num + 1,
+                    "image_data": base64.b64encode(img_data).decode('utf-8'),
+                    "text": text
+                })
+        
+        return tables
+    except Exception as e:
+        logger.error(f"Error extracting tables from PDF: {e}")
+        return []
+
+# Extract charts and images from PDF
+def extract_charts_from_pdf(pdf_path):
+    """Extract charts and images from PDF"""
+    if not os.path.exists(pdf_path):
+        return []
+    
+    charts = []
+    try:
+        doc = fitz.open(pdf_path)
+        for page_num, page in enumerate(doc):
+            # Get images from page
+            image_list = page.get_images(full=True)
+            
+            for img_index, img in enumerate(image_list):
+                xref = img[0]
+                base_image = doc.extract_image(xref)
+                image_bytes = base_image["image"]
+                
+                # Store the image
+                charts.append({
+                    "page": page_num + 1,
+                    "image_index": img_index,
+                    "image_data": base64.b64encode(image_bytes).decode('utf-8')
+                })
+        
+        return charts
+    except Exception as e:
+        logger.error(f"Error extracting charts from PDF: {e}")
+        return []
+
+# Function to directly use the DeepSeek model through Ollama
+def ask_deepseek_model(question, question_type=None):
+    import requests
+    import re
+    
+    logger.info(f"Processing question: {question}, type: {question_type}")
+    
+    # Ollama API endpoint
+    url = "http://localhost:11434/api/generate"
+    
+    # Check if this is a math question
+    is_math = '=' in question or 'f(' in question or re.search(r'[x-zX-Z]²', question)
+    
+    # Create an appropriate prompt
+    if is_math:
+        # Format prompt to enable proper LaTeX formatting
+        prompt = f"""You are an SAT math tutor. For the question: {question}
+
+Solve using proper LaTeX formatting with these STRICT rules:
+1. ALL LaTeX expressions MUST be wrapped in $ $ for inline math or $$ $$ for displayed equations.
+2. Never use raw LaTeX commands outside of math delimiters.
+3. Always place \\textbf, \\boxed, \\frac, and all other LaTeX commands inside $ $ delimiters.
+
+Format your answer as follows:
+
+Solve the equation:
+$$[Equation with LaTeX notation]$$
+
+Step 1: [Describe first step]
+$$[Step 1 calculation with LaTeX notation]$$
+
+Step 2: [Describe second step]
+$$[Step 2 calculation with LaTeX notation]$$
+
+Final Answer:
+$$\\boxed{{[Answer with LaTeX notation]}}$$"""
+    else:
+        prompt = f"""You are an SAT preparation tutor. Answer the following question:
+
+Question: {question}
+
+Provide a clear, structured answer explaining the reasoning behind your response. 
+If the question involves charts or tables, describe them and explain their relevance to your answer.
+Focus on being accurate and helpful for students preparing for the SAT."""
+    
+    # Speed-optimized configuration
+    data = {
+        "model": "deepseek-r1:1.5b",
+        "prompt": prompt,
+        "stream": False,
+        "options": {
+            "num_gpu": 1,
+            "temperature": 1,
+            "top_p": 0.5,
+            "top_k": 0.10,
+            "gpu_layers": -1,
+            "f16_kv": True,
+            "num_ctx": 4096,
+            "batch_size": 64
+        }
+    }
+    
+    try:
+        logger.info("Sending request to DeepSeek model")
+        response = requests.post(url, json=data)
+        
+        if response.status_code == 200:
+            result = response.json()
+            answer = result.get("response", "Error connecting to AI model.")
+            
+            # Clean up any "think" sections if they appear
+            if "<think>" in answer or "think" in answer.lower():
+                answer = re.sub(r'<think>.*?</think>', '', answer, flags=re.DOTALL)
+                answer = re.sub(r'think.*?/think', '', answer, flags=re.DOTALL)
+            
+            logger.info(f"Generated response of length {len(answer)}")
+            return answer
+        else:
+            logger.error(f"Error from DeepSeek API: {response.status_code}")
+            return f"Error connecting to AI model. Status code: {response.status_code}"
+    except Exception as e:
+        logger.error(f"Exception in ask_deepseek_model: {str(e)}")
+        return f"Error connecting to AI model: {str(e)}"
+
+# Handle chart questions
+def handle_chart_question(question, chart_type=None):
+    """Special handling for questions involving charts or graphs"""
+    logger.info(f"Handling chart question: {question}")
+    
+    # Extract and analyze charts if needed
+    charts = []
+    
+    # Find relevant charts based on the question
+    try:
+        if "graph" in question.lower() or "chart" in question.lower() or "table" in question.lower():
+            # Check all practice tests for charts
+            for key, path in SAT_MATERIALS.items():
+                if 'practice_test' in key:
+                    test_charts = extract_charts_from_pdf(path)
+                    charts.extend(test_charts)
+                    logger.info(f"Extracted {len(test_charts)} potential charts from {key}")
+    except Exception as e:
+        logger.error(f"Error extracting charts: {str(e)}")
+    
+    # Generate analysis of charts
+    chart_context = ""
+    if charts:
+        chart_context = "The question involves chart(s)/graph(s). Here's what I can identify:\n"
+        for i, chart in enumerate(charts[:3]):  # Limit to first 3 charts
+            page_num = chart.get('page', 'unknown')
+            
+            # Basic chart detection - cannot do proper analysis without image processing
+            chart_context += f"- Chart/Figure on page {page_num}. "
+            chart_context += "Without advanced image analysis, I cannot describe the specific contents, "
+            chart_context += "but SAT charts typically present data for interpretation and analysis.\n"
+    
+    # Enhanced query for chart questions
+    enhanced_question = question
+    if chart_context:
+        enhanced_question = f"{question}\n\n{chart_context}"
+        
+    logger.info(f"Enhanced chart question: {enhanced_question}")
+    
+    # Add special context for chart questions based on known SAT content
+    additional_context = """
+SAT charts and graphs test data interpretation skills. Common types include:
+1. Bar charts - comparing quantities across categories
+2. Line graphs - showing trends over time
+3. Scatterplots - showing relationships between variables
+4. Tables - organized data in rows and columns
+5. Circle/pie charts - showing proportions of a whole
+
+Questions typically ask about trends, comparisons, extremes (max/min), calculations from data,
+or drawing conclusions from the presented information.
+"""
+    
+    # Process with DeepSeek
+    return ask_deepseek_model(enhanced_question)
+
+@app.route('/chart_diagnostic', methods=['GET'])
+def chart_diagnostic():
+    """Run a diagnostic on chart extraction capabilities"""
+    results = {
+        "status": "running",
+        "charts_found": [],
+        "extraction_details": {}
+    }
+    
+    try:
+        # Extract charts from all practice tests
+        all_charts = []
+        chart_counts = {}
+        
+        for key, path in SAT_MATERIALS.items():
+            if 'practice_test' in key:
+                test_charts = extract_charts_from_pdf(path)
+                all_charts.extend([(key, chart) for chart in test_charts])
+                chart_counts[key] = len(test_charts)
+        
+        # Basic stats
+        results["extraction_details"] = chart_counts
+        
+        # Sample chart info (without the actual image data which would be too large)
+        for source_key, chart in all_charts[:10]:  # Show first 10 charts across all tests
+            chart_info = {
+                "source": source_key,
+                "page": chart.get('page', 'unknown'),
+                "image_index": chart.get('image_index', 0),
+                "has_image_data": "image_data" in chart and bool(chart["image_data"]),
+                "image_size_bytes": len(base64.b64decode(chart["image_data"])) if "image_data" in chart and chart["image_data"] else 0
+            }
+            results["charts_found"].append(chart_info)
+        
+        results["status"] = "complete"
+        return jsonify(results)
+    except Exception as e:
+        results["status"] = "error"
+        results["error"] = str(e)
+        return jsonify(results), 500
+
+# Enhanced endpoint to answer questions
+@app.route('/ask', methods=['POST'])
+def ask_question():
+    data = request.json
+    question = data.get('question', '')
+    user_id = data.get('user_id', None)
+    question_type = data.get('question_type', None)
+    
+    logger.info(f"Received question: '{question}' with type: '{question_type}'")
+    
+    try:
+        # VERY specific chart detection - only trigger for explicit chart/graph mentions
+        chart_related_terms = ['chart', 'graph', 'bar graph', 'line graph', 'pie chart', 'plot', 'histogram']
+        table_related_terms = ['table', 'grid', 'matrix']
+        
+        # Exclude math/geometry problems
+        math_terms = [
+    'rectangle', 'area', 'square inches', 'equation', 'solve',
+    'triangle', 'square', 'polygon', 'trapezoid', 'rhombus', 'parallelogram',
+    'circle', 'radius', 'diameter', 'circumference', 'perimeter', 'volume',
+    'surface area', 'angle', 'degrees', 'obtuse', 'acute', 'right angle',
+    'congruent', 'similar', 'geometry', 'prism', 'cube', 'cylinder',
+    'cone', 'sphere', 'vertices', 'edges', 'faces',
+    'variable', 'expression', 'simplify', 'factor', 'multiple', 'divide',
+    'multiply', 'addition', 'subtraction', 'sum', 'difference', 'product',
+    'quotient', 'average', 'mean', 'median', 'mode', 'range',
+    'probability', 'percentage', 'decimal', 'fraction', 'integer',
+    'whole number', 'inequality', 'proportion', 'ratio', 'percent',
+    'square root', 'exponent', 'power', 'logarithm', 'algebra',
+    'polynomial', 'linear', 'quadratic', 'system of equations',
+    'inequality', 'function', 'domain', 'range', 'derivative',
+    'integral', 'calculus', 'matrix', 'vector', 'coordinate',
+    'slope', 'intercept', 'tangent', 'secant', 'yards']
+
+        
+        # A question is only chart-related if it EXPLICITLY mentions charts/graphs AND isn't just a math problem
+        is_chart_question = (
+            any(term.lower() in question.lower() for term in chart_related_terms + table_related_terms) and
+            not any(term.lower() in question.lower() for term in math_terms)
+        )
+
+        is_math_question= (
+            any(term.lower() in question.lower() for term in math_terms)     
+        )
+        
+        if is_chart_question:
+            logger.info("Chart-related question detected")
+            answer = handle_chart_question(question, chart_type=question_type)
+
+        elif is_math_question:     
+            logger.info("Math question detected")
+            answer = ask_deepseek_model(question, question_type=question_type)
+        
+        else:
+            # Regular question handling
+            logger.info("Regular question detected")
+            answer = ask_deepseek_model(question, question_type=question_type)
+        
+        logger.info(f"Generated answer of length {len(answer)}")
+        return jsonify({'answer': answer})
+    except Exception as e:
+        logger.error(f"Error in ask_question: {str(e)}")
+        return jsonify({'error': str(e), 'answer': "I encountered an error while processing your question. Please try again."}), 500
+        
+ 
+# Endpoint to get sample SAT questions
+@app.route('/questions', methods=['GET'])
+def get_questions():
+   try:
+       conn, cursor = get_db_connection()
+       cursor.execute("SELECT question_id, question_text, topic FROM questions LIMIT 10")
+       questions = cursor.fetchall()
+       cursor.close()
+       conn.close()
+       return jsonify({'questions': questions})
+   except Exception as e:
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint to get a specific question
+@app.route('/questions/<int:question_id>', methods=['GET'])
+def get_question(question_id):
+   try:
+       conn, cursor = get_db_connection()
+       cursor.execute("SELECT * FROM questions WHERE question_id = %s", (question_id,))
+       question = cursor.fetchone()
+       cursor.close()
+       conn.close()
+       
+       if question:
+           return jsonify({'question': question})
+       else:
+           return jsonify({'error': 'Question not found'}), 404
+   except Exception as e:
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint to get questions by topic
+@app.route('/questions/topic/<topic>', methods=['GET'])
+def get_questions_by_topic(topic):
+   try:
+       conn, cursor = get_db_connection()
+       cursor.execute("SELECT * FROM questions WHERE topic = %s", (topic,))
+       questions = cursor.fetchall()
+       cursor.close()
+       conn.close()
+       
+       if questions:
+           return jsonify({'questions': questions})
+       else:
+           return jsonify({'error': 'No questions found for this topic'}), 404
+   except Exception as e:
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint to submit an answer to a question
+@app.route('/submit_answer', methods=['POST'])
+def submit_answer():
+   data = request.json
+   user_id = data.get('user_id')
+   question_id = data.get('question_id')
+   user_answer = data.get('user_answer')
+   
+   if not all([user_id, question_id, user_answer]):
+       return jsonify({'error': 'Missing required fields'}), 400
+   
+   try:
+       conn, cursor = get_db_connection()
+       
+       # Get correct answer from the database
+       cursor.execute("SELECT answer_text, explanation, topic, question_text FROM questions WHERE question_id = %s", (question_id,))
+       question_data = cursor.fetchone()
+       
+       if not question_data:
+           cursor.close()
+           conn.close()
+           return jsonify({'error': 'Question not found'}), 404
+       
+       # Check if the answer is correct (simple string comparison for now)
+       is_correct = user_answer.lower().strip() == question_data['answer_text'].lower().strip()
+       
+       # Record the user's response
+       cursor.execute(
+           "INSERT INTO user_responses (user_id, question_id, user_answer, is_correct) VALUES (%s, %s, %s, %s)",
+           (user_id, question_id, user_answer, is_correct)
+       )
+       
+       # Update user's weak areas if the answer was incorrect
+       if not is_correct:
+           cursor.execute("SELECT weak_areas FROM users WHERE user_id = %s", (user_id,))
+           user_data = cursor.fetchone()
+           
+           if user_data:
+               weak_areas = user_data['weak_areas'].split(',') if user_data['weak_areas'] else []
+               topic = question_data['topic']
+               
+               if topic not in weak_areas:
+                   weak_areas.append(topic)
+                   new_weak_areas = ','.join(weak_areas)
+                   cursor.execute("UPDATE users SET weak_areas = %s WHERE user_id = %s", (new_weak_areas, user_id))
+       
+       conn.commit()
+       cursor.close()
+       conn.close()
+       
+       # Get enhanced explanation if incorrect
+       explanation = question_data['explanation']
+       if not is_correct:
+           question_text = question_data['question_text']
+           
+           enhanced_explanation = ask_deepseek_model(
+               f"Explain why the answer to this SAT question is '{question_data['answer_text']}' and not '{user_answer}'? Question: {question_text}"
+           )
+           
+           if enhanced_explanation and len(enhanced_explanation) > 50:
+               explanation = enhanced_explanation
+       
+       return jsonify({
+           'is_correct': is_correct,
+           'correct_answer': question_data['answer_text'],
+           'explanation': explanation if not is_correct else None
+       })
+   except Exception as e:
+       logger.error(f"Error in submit_answer: {str(e)}")
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint to get user performance statistics
+@app.route('/user_stats/<int:user_id>', methods=['GET'])
+def get_user_stats(user_id):
+   try:
+       conn, cursor = get_db_connection()
+       
+       # Get total questions answered
+       cursor.execute("SELECT COUNT(*) as total FROM user_responses WHERE user_id = %s", (user_id,))
+       total_questions = cursor.fetchone()['total']
+       
+       # Get correct answers
+       cursor.execute("SELECT COUNT(*) as correct FROM user_responses WHERE user_id = %s AND is_correct = TRUE", (user_id,))
+       correct_answers = cursor.fetchone()['correct']
+       
+       # Get performance by topic
+       cursor.execute("""
+           SELECT q.topic, COUNT(*) as total, SUM(CASE WHEN ur.is_correct THEN 1 ELSE 0 END) as correct
+           FROM user_responses ur
+           JOIN questions q ON ur.question_id = q.question_id
+           WHERE ur.user_id = %s
+           GROUP BY q.topic
+       """, (user_id,))
+       
+       topic_performance = cursor.fetchall()
+       
+       # Get recommended study topics based on performance
+       cursor.execute("SELECT weak_areas FROM users WHERE user_id = %s", (user_id,))
+       user_data = cursor.fetchone()
+       weak_areas = user_data['weak_areas'].split(',') if user_data and user_data['weak_areas'] else []
+       
+       cursor.close()
+       conn.close()
+       
+       # Generate personalized study plan
+       study_plan = []
+       if weak_areas:
+           for area in weak_areas:
+               if area:
+                   study_recommendation = ask_deepseek_model(
+                       f"Create a brief study plan for the SAT {area} section. The student is struggling with this area."
+                   )
+                   study_plan.append({
+                       "topic": area,
+                       "recommendation": study_recommendation
+                   })
+       
+       return jsonify({
+           'total_questions': total_questions,
+           'correct_answers': correct_answers,
+           'accuracy': (correct_answers / total_questions * 100) if total_questions > 0 else 0,
+           'topic_performance': topic_performance,
+           'weak_areas': weak_areas,
+           'study_plan': study_plan
+       })
+   except Exception as e:
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint to seed additional SAT questions
+@app.route('/seed_questions', methods=['GET'])
+def seed_questions():
+   try:
+       conn, cursor = get_db_connection()
+       
+       # Additional SAT sample questions
+       questions = [
+           {
+               'question_text': 'If f(x) = 2x² + 3x - 5, what is f(3)?',
+               'answer_text': '22',
+               'explanation': 'Substitute x = 3 into the function: f(3) = 2(3)² + 3(3) - 5 = 2(9) + 9 - 5 = 18 + 9 - 5 = 22',
+               'topic': 'Math'
+           },
+           {
+               'question_text': 'What is the slope of a line perpendicular to y = 3x + 2?',
+               'answer_text': '-1/3',
+               'explanation': 'The slope of y = 3x + 2 is 3. Perpendicular lines have slopes that are negative reciprocals of each other. The negative reciprocal of 3 is -1/3.',
+               'topic': 'Math'
+           },
+           {
+               'question_text': 'The main purpose of the passage is to...',
+               'answer_text': 'describe a natural phenomenon and explain its scientific basis',
+               'explanation': 'The passage primarily focuses on describing a natural occurrence and then providing the scientific explanation behind it.',
+               'topic': 'Reading'
+           },
+           {
+               'question_text': 'The author uses the phrase "delicate balance" (line 45) primarily to emphasize...',
+               'answer_text': 'the fragility of ecosystems',
+               'explanation': 'In context, the phrase "delicate balance" is used to highlight how easily ecosystems can be disrupted, emphasizing their fragility.',
+               'topic': 'Reading'
+           },
+           {
+               'question_text': 'Choose the word or phrase that best maintains the tone of the passage.',
+               'answer_text': 'significant',
+               'explanation': 'The word "significant" maintains the formal, academic tone of the passage, while the other options are either too casual or too technical.',
+               'topic': 'Writing'
+           },
+           {
+               'question_text': 'Correct the sentence: "The committee, including the chairman and treasurer were in attendance."',
+               'answer_text': 'The committee, including the chairman and treasurer, was in attendance.',
+               'explanation': 'The subject of the sentence is "committee," which is singular. Therefore, the verb should be "was" not "were." Also, the phrase "including the chairman and treasurer" should be set off by commas on both sides.',
+               'topic': 'Writing'
+           }
+       ]
+       
+       # Insert questions
+       for q in questions:
+           cursor.execute(
+               "INSERT INTO questions (question_text, answer_text, explanation, topic) VALUES (%s, %s, %s, %s)",
+               (q['question_text'], q['answer_text'], q['explanation'], q['topic'])
+           )
+       
+       conn.commit()
+       cursor.close()
+       conn.close()
+       
+       return jsonify({'message': f'Successfully added {len(questions)} new questions'})
+   except Exception as e:
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint to get study materials
+@app.route('/study_materials/<topic>', methods=['GET'])
+def get_study_materials(topic):
+   """Get personalized study materials for a specific topic"""
+   try:
+       # Generate study materials using the model
+       study_content = ask_deepseek_model(
+           f"Create comprehensive study notes for the SAT {topic} section. Include key concepts, common question types, and strategies."
+       )
+       
+       # Extract practice questions from the database
+       conn, cursor = get_db_connection()
+       cursor.execute("SELECT question_id, question_text FROM questions WHERE topic = %s LIMIT 5", (topic,))
+       practice_questions = cursor.fetchall()
+       cursor.close()
+       conn.close()
+       
+       return jsonify({
+           'topic': topic,
+           'study_content': study_content,
+           'practice_questions': practice_questions
+       })
+   except Exception as e:
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint to get explanations for SAT concepts
+@app.route('/explain_concept', methods=['POST'])
+def explain_concept():
+   """Get explanations for SAT concepts"""
+   data = request.json
+   concept = data.get('concept', '')
+   topic = data.get('topic', 'general')
+   
+   if not concept:
+       return jsonify({'error': 'Missing concept to explain'}), 400
+   
+   try:
+       # Generate explanation using model
+       explanation = ask_deepseek_model(
+           f"Explain the SAT concept: {concept}. Provide a detailed explanation with examples."
+       )
+       
+       return jsonify({
+           'concept': concept,
+           'explanation': explanation
+       })
+   except Exception as e:
+       return jsonify({'error': str(e)}), 500
+
+# New endpoint to get available practice tests
+@app.route('/available_practice_tests', methods=['GET'])
+def available_practice_tests():
+   """List all available practice tests"""
+   try:
+       # Extract test numbers from SAT_MATERIALS
+       tests = {}
+       for key, path in SAT_MATERIALS.items():
+           if '_' in key:
+               key_parts = key.split('_')
+               if key_parts[-1].isdigit():
+                   test_type = '_'.join(key_parts[:-1])
+                   test_num = key_parts[-1]
+               else:
+                   test_type = key
+                   test_num = '7'  # Default for original files
+           else:
+               test_type = key
+               test_num = '7'  # Default for original files
+           
+           if test_num not in tests:
+               tests[test_num] = {}
+           
+           tests[test_num][test_type] = {
+               "path": path,
+               "exists": os.path.exists(path),
+               "size_mb": round(os.path.getsize(path) / (1024 * 1024), 2) if os.path.exists(path) else None
+           }
+       
+       return jsonify({
+           "available_tests": tests,
+           "total_tests": len(tests)
+       })
+   except Exception as e:
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint for text-based search in PDFs
+@app.route('/search_pdfs', methods=['POST'])
+def search_pdfs():
+   """Search for text in PDFs"""
+   data = request.json
+   query = data.get('query', '')
+   test_number = data.get('test_number', None)
+   
+   if not query:
+       return jsonify({'error': 'Missing query parameter'}), 400
+   
+   results = []
+   try:
+       # Determine which PDFs to search
+       search_files = []
+       if test_number:
+           # Find all PDFs related to this test number
+           for key, path in SAT_MATERIALS.items():
+               if test_number in key and os.path.exists(path):
+                   search_files.append((key, path))
+       else:
+           # Search all PDFs
+           search_files = [(key, path) for key, path in SAT_MATERIALS.items() if os.path.exists(path)]
+       
+       # Search through PDFs
+       for key, path in search_files:
+           try:
+               doc = fitz.open(path)
+               for page_num, page in enumerate(doc):
+                   text = page.get_text()
+                   
+                   # Simple text search
+                   query_lower = query.lower()
+                   text_lower = text.lower()
+                   
+                   if query_lower in text_lower:
+                       # Extract a snippet around the match
+                       start_idx = text_lower.find(query_lower)
+                       snippet_start = max(0, start_idx - 50)
+                       snippet_end = min(len(text), start_idx + len(query) + 50)
+                       snippet = text[snippet_start:snippet_end]
+                       
+                       # Highlight the query in the snippet
+                       highlighted = snippet.replace(query, f"**{query}**")
+                       
+                       results.append({
+                           "file": key,
+                           "page": page_num + 1,
+                           "snippet": highlighted,
+                           "match_position": start_idx
+                       })
+           except Exception as e:
+               logger.error(f"Error searching PDF {key}: {e}")
+       
+       # Sort results by relevance (simple heuristic: earlier matches are more relevant)
+       results.sort(key=lambda x: x["match_position"])
+       
+       return jsonify({
+           "query": query,
+           "test_number": test_number,
+           "results": results,
+           "total_results": len(results)
+       })
+   except Exception as e:
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint to extract specific questions from PDFs
+@app.route('/extract_questions', methods=['POST'])
+def extract_questions():
+   """Extract questions from a specific practice test"""
+   data = request.json
+   test_number = data.get('test_number', '7')  # Default to test 7
+   section = data.get('section', None)  # Math or Reading & Writing
+   
+   try:
+       # Find the practice test file
+       practice_test_key = f'practice_test_{test_number}' if test_number != '7' else 'practice_test'
+       practice_test_path = SAT_MATERIALS.get(practice_test_key)
+       
+       if not practice_test_path or not os.path.exists(practice_test_path):
+           return jsonify({'error': f'Practice test {test_number} not found'}), 404
+       
+       # Extract text from the PDF
+       sections = extract_text_from_pdf(practice_test_path)
+       
+       # Filter sections if needed
+       if section:
+           section_lower = section.lower()
+           sections = [s for s in sections if section_lower in s['section'].lower()]
+       
+       # Extract questions using regex patterns
+       questions = []
+       question_pattern = r'QUESTION\s+(\d+)([^?]+\?)'
+       
+       for section_data in sections:
+           matches = re.findall(question_pattern, section_data['text'], re.DOTALL)
+           
+           for match in matches:
+               question_num = match[0]
+               question_text = match[1].strip()
+               
+               questions.append({
+                   "test_number": test_number,
+                   "question_number": question_num,
+                   "question_text": question_text,
+                   "section": section_data['section'],
+                   "page": section_data['page']
+               })
+       
+       return jsonify({
+           "test_number": test_number,
+           "section": section,
+           "questions": questions,
+           "total_questions": len(questions)
+       })
+   except Exception as e:
+       logger.error(f"Error extracting questions: {e}")
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint to get PDF content for a specific test
+@app.route('/get_pdf_content', methods=['GET'])
+def get_pdf_content():
+   """Get content from a specific PDF"""
+   test_number = request.args.get('test_number', '7')
+   content_type = request.args.get('type', 'practice_test')  # practice_test, answers, or scoring
+   page = request.args.get('page')
+   
+   try:
+       # Determine the correct file key
+       if test_number == '7':
+           if content_type in ['practice_test', 'answers', 'scoring']:
+               file_key = content_type
+           else:
+               return jsonify({'error': 'Invalid content type'}), 400
+       else:
+           file_key = f'{content_type}_{test_number}'
+       
+       # Get the file path
+       file_path = SAT_MATERIALS.get(file_key)
+       
+       if not file_path or not os.path.exists(file_path):
+           return jsonify({'error': f'File not found: {file_key}'}), 404
+       
+       # Extract content
+       doc = fitz.open(file_path)
+       
+       # If page is specified, return only that page
+       if page and page.isdigit():
+           page_num = int(page) - 1  # Convert to 0-based index
+           if 0 <= page_num < len(doc):
+               page_content = doc[page_num].get_text()
+               return jsonify({
+                   "test_number": test_number,
+                   "content_type": content_type,
+                   "page": page_num + 1,
+                   "content": page_content
+               })
+           else:
+               return jsonify({'error': f'Page {page} out of range'}), 400
+       
+       # Otherwise return all pages
+       content = []
+       for i, page in enumerate(doc):
+           content.append({
+               "page_number": i + 1,
+               "content": page.get_text()
+           })
+       
+       return jsonify({
+           "test_number": test_number,
+           "content_type": content_type,
+           "total_pages": len(doc),
+           "content": content
+       })
+   except Exception as e:
+       logger.error(f"Error getting PDF content: {e}")
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint to create and manage practice sessions
+@app.route('/practice_sessions', methods=['POST', 'GET'])
+def practice_sessions():
+   """Create or retrieve practice sessions"""
+   if request.method == 'POST':
+       # Create a new practice session
+       data = request.json
+       user_id = data.get('user_id')
+       test_number = data.get('test_number', '7')
+       topic = data.get('topic')
+       
+       if not user_id:
+           return jsonify({'error': 'Missing user_id'}), 400
+       
+       try:
+           conn, cursor = get_db_connection()
+           
+           # Create a new session
+           cursor.execute(
+               "INSERT INTO practice_sessions (user_id, test_number, topic, start_time) VALUES (%s, %s, %s, NOW())",
+               (user_id, test_number, topic)
+           )
+           conn.commit()
+           
+           # Get the created session ID
+           session_id = cursor.lastrowid
+           
+           # Get questions for this session
+           if topic:
+               cursor.execute("SELECT * FROM questions WHERE topic = %s LIMIT 10", (topic,))
+           else:
+               cursor.execute("SELECT * FROM questions LIMIT 10")
+               
+           questions = cursor.fetchall()
+           
+           # Link questions to this session
+           for question in questions:
+               cursor.execute(
+                   "INSERT INTO session_questions (session_id, question_id) VALUES (%s, %s)",
+                   (session_id, question['question_id'])
+               )
+           
+           conn.commit()
+           cursor.close()
+           conn.close()
+           
+           return jsonify({
+               'session_id': session_id,
+               'user_id': user_id,
+               'test_number': test_number,
+               'topic': topic,
+               'questions': questions,
+               'created_at': str(datetime.now())
+           })
+       except Exception as e:
+           logger.error(f"Error creating practice session: {e}")
+           return jsonify({'error': str(e)}), 500
+   
+   else:  # GET request
+       user_id = request.args.get('user_id')
+       
+       if not user_id:
+           return jsonify({'error': 'Missing user_id'}), 400
+       
+       try:
+           conn, cursor = get_db_connection()
+           
+           # Get all sessions for this user
+           cursor.execute("""
+               SELECT ps.*, COUNT(sq.question_id) as question_count 
+               FROM practice_sessions ps
+               LEFT JOIN session_questions sq ON ps.session_id = sq.session_id
+               WHERE ps.user_id = %s
+               GROUP BY ps.session_id
+               ORDER BY ps.start_time DESC
+           """, (user_id,))
+           
+           sessions = cursor.fetchall()
+           cursor.close()
+           conn.close()
+           
+           return jsonify({
+               'user_id': user_id,
+               'sessions': sessions
+           })
+       except Exception as e:
+           logger.error(f"Error retrieving practice sessions: {e}")
+           return jsonify({'error': str(e)}), 500
+
+# Endpoint to get a specific practice session with its questions
+@app.route('/practice_sessions/<int:session_id>', methods=['GET'])
+def get_practice_session(session_id):
+   try:
+       conn, cursor = get_db_connection()
+       
+       # Get session details
+       cursor.execute("SELECT * FROM practice_sessions WHERE session_id = %s", (session_id,))
+       session = cursor.fetchone()
+       
+       if not session:
+           cursor.close()
+           conn.close()
+           return jsonify({'error': 'Session not found'}), 404
+       
+       # Get questions for this session
+       cursor.execute("""
+           SELECT q.* 
+           FROM questions q
+           JOIN session_questions sq ON q.question_id = sq.question_id
+           WHERE sq.session_id = %s
+       """, (session_id,))
+       
+       questions = cursor.fetchall()
+       
+       # Get user's responses in this session
+       cursor.execute("""
+           SELECT ur.* 
+           FROM user_responses ur
+           JOIN session_questions sq ON ur.question_id = sq.question_id
+           WHERE sq.session_id = %s AND ur.user_id = %s
+       """, (session_id, session['user_id']))
+       
+       responses = cursor.fetchall()
+       
+       cursor.close()
+       conn.close()
+       
+       return jsonify({
+           'session': session,
+           'questions': questions,
+           'responses': responses,
+           'completion_rate': len(responses) / len(questions) * 100 if questions else 0
+       })
+   except Exception as e:
+       logger.error(f"Error retrieving practice session: {e}")
+       return jsonify({'error': str(e)}), 500
+
+# Endpoint to complete a practice session
+@app.route('/practice_sessions/<int:session_id>/complete', methods=['POST'])
+def complete_practice_session(session_id):
+   try:
+       conn, cursor = get_db_connection()
+       
+       # Update session end time
+       cursor.execute(
+           "UPDATE practice_sessions SET end_time = NOW(), is_completed = TRUE WHERE session_id = %s",
+           (session_id,)
+       )
+       
+       # Get session details to calculate performance
+       cursor.execute("""
+           SELECT ps.user_id, ps.topic,
+               COUNT(ur.response_id) as answered,
+               SUM(CASE WHEN ur.is_correct THEN 1 ELSE 0 END) as correct
+           FROM practice_sessions ps
+           JOIN session_questions sq ON ps.session_id = sq.session_id
+           LEFT JOIN user_responses ur ON sq.question_id = ur.question_id AND ur.user_id = ps.user_id
+           WHERE ps.session_id = %s
+           GROUP BY ps.user_id, ps.topic
+       """, (session_id,))
+       
+       performance = cursor.fetchone()
+       
+       conn.commit()
+       cursor.close()
+       conn.close()
+       
+       # Generate a performance summary
+       if performance:
+           accuracy = (performance['correct'] / performance['answered'] * 100) if performance['answered'] > 0 else 0
+           
+           performance_summary = ask_deepseek_model(
+               f"Create a brief personalized performance summary for a student who completed a practice session on SAT {performance['topic']} with {performance['correct']} correct answers out of {performance['answered']} questions ({accuracy:.1f}% accuracy). Include encouragement and 2-3 specific tips for improvement."
+           )
+           
+           return jsonify({
+               'session_id': session_id,
+               'completed': True,
+               'performance': {
+                   'answered': performance['answered'],
+                   'correct': performance['correct'],
+                   'accuracy': accuracy
+               },
+               'summary': performance_summary
+           })
+       else:
+           return jsonify({
+               'session_id': session_id,
+               'completed': True,
+               'performance': None
+           })
+   except Exception as e:
+       logger.error(f"Error completing practice session: {e}")
+       return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+   app.run(debug=True)

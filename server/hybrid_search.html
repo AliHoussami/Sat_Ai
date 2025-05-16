@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SAT Search Tester</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; }
+        .panel { background: #f5f5f5; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        button { padding: 8px 15px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+        .results { white-space: pre-wrap; background: #f0f0f0; padding: 10px; margin-top: 10px; max-height: 400px; overflow: auto; }
+        input[type="text"] { padding: 8px; width: 400px; }
+    </style>
+</head>
+<body>
+    <h1>SAT Search Tester</h1>
+    
+    <div class="panel">
+        <h2>Test Search</h2>
+        <input id="query" type="text" placeholder="Enter search query" value="SAT MATH SECTION">
+        <button onclick="testSearch()">Search</button>
+        <div id="searchResults" class="results"></div>
+    </div>
+    
+    <div class="panel">
+        <h2>Common Searches</h2>
+        <div>
+            <button onclick="setQuery('SAT MATH SECTION')">SAT MATH SECTION</button>
+            <button onclick="setQuery('READING PASSAGES SAT')">READING PASSAGES SAT</button>
+            <button onclick="setQuery('Test 5 math')">Test 5 math</button>
+            <button onclick="setQuery('Test 8 reading')">Test 8 reading</button>
+            <button onclick="setQuery('scoring the SAT')">scoring the SAT</button>
+        </div>
+    </div>
+    
+    <script>
+        // Set query in the input field
+        function setQuery(query) {
+            document.getElementById('query').value = query;
+            testSearch();
+        }
+        
+        // Test search
+        async function testSearch() {
+            const query = document.getElementById('query').value;
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.textContent = "Searching...";
+            
+            try {
+                const startTime = performance.now();
+                
+                const response = await fetch('http://localhost:5000/search_practice_test', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query })
+                });
+                
+                const data = await response.json();
+                const endTime = performance.now();
+                const searchTime = ((endTime - startTime) / 1000).toFixed(3);
+                
+                let results = `Search completed in ${searchTime} seconds\n`;
+                results += `Query: "${query}"\n`;
+                results += `Found ${data.results ? data.results.length : 0} results\n\n`;
+                
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach((result, index) => {
+                        results += `Result ${index + 1}:\n`;
+                        results += `  Similarity: ${result.similarity.toFixed(4)}\n`;
+                        results += `  Type: ${result.type}\n`;
+                        results += `  Section: ${result.section}\n`;
+                        results += `  Text: ${result.text.substring(0, 200)}...\n\n`;
+                    });
+                } else {
+                    results += "No results found.";
+                }
+                
+                resultsDiv.textContent = results;
+            } catch (error) {
+                resultsDiv.textContent = "Error: " + error;
+            }
+        }
+        
+        // Run a search on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            testSearch();
+        });
+    </script>
+</body>
+</html>

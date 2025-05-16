@@ -1,0 +1,689 @@
+2025-05-07 17:04:12,004 - __main__ - INFO - Starting file-by-file insertion into RAG database
+2025-05-07 17:04:12,006 - sentence_transformers.SentenceTransformer - INFO - Use pytorch device_name: cpu
+2025-05-07 17:04:12,006 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: all-mpnet-base-v2
+2025-05-07 17:04:14,964 - __main__ - INFO - Initialized VectorDatabase with embedding model: all-mpnet-base-v2
+2025-05-07 17:04:22,964 - __main__ - INFO - Processing practice_test_4 from sat-practice-test-4-digital.pdf
+2025-05-07 17:04:22,964 - __main__ - INFO - Identified as practice_test for Test 4
+2025-05-07 17:04:23,022 - __main__ - INFO - Opened PDF: sat-practice-test-4-digital.pdf with 56 pages
+2025-05-07 17:04:23,605 - __main__ - INFO - Extracted 56 sections from PDF sat-practice-test-4-digital.pdf
+2025-05-07 17:04:23,616 - __main__ - INFO - Extracted 56 sections from practice_test 4
+2025-05-07 17:04:23,616 - __main__ - INFO - Adding section: Test 4 - Page 1
+2025-05-07 17:04:23,617 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 1, length=402
+2025-05-07 17:04:23,617 - __main__ - INFO - Document preview: SAT Practice Test 4: t:J 
+~ 
+829939
+11111111111111111111
+IIIIII 
+6TSL05
+The SAT® 
+Practice
+Test# 4
+ ...
+2025-05-07 17:04:23,619 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:23,619 - __main__ - INFO - Updating embeddings for 1 documents
+2025-05-07 17:04:29,601 - __main__ - INFO - Embeddings updated successfully in 5.98 seconds
+2025-05-07 17:04:29,601 - __main__ - INFO - Embedding shape: (1, 768)
+2025-05-07 17:04:29,601 - __main__ - INFO - Adding section: Test 4 - Page 2
+2025-05-07 17:04:29,601 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 2, length=21
+2025-05-07 17:04:29,601 - __main__ - INFO - Document preview: SAT Practice Test 4: ...
+2025-05-07 17:04:29,601 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:29,601 - __main__ - INFO - Updating embeddings for 2 documents
+2025-05-07 17:04:29,733 - __main__ - INFO - Embeddings updated successfully in 0.13 seconds
+2025-05-07 17:04:29,733 - __main__ - INFO - Embedding shape: (2, 768)
+2025-05-07 17:04:29,733 - __main__ - INFO - Adding section: Test 4 - Page 3
+2025-05-07 17:04:29,733 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 3, length=52
+2025-05-07 17:04:29,733 - __main__ - INFO - Document preview: SAT Practice Test 4: Test begins on the next page. 
+...
+2025-05-07 17:04:29,733 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:29,733 - __main__ - INFO - Updating embeddings for 3 documents
+2025-05-07 17:04:29,897 - __main__ - INFO - Embeddings updated successfully in 0.16 seconds
+2025-05-07 17:04:29,897 - __main__ - INFO - Embedding shape: (3, 768)
+2025-05-07 17:04:29,897 - __main__ - INFO - Adding section: Test 4 - 33 QUESTIONS
+2025-05-07 17:04:29,897 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - 33 QUESTIONS, length=1725
+2025-05-07 17:04:29,897 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+Reading and Writing 
+33 QUESTIONS 
+DIRECTIONS 
+The questions in this...
+2025-05-07 17:04:29,897 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:29,897 - __main__ - INFO - Updating embeddings for 4 documents
+2025-05-07 17:04:30,667 - __main__ - INFO - Embeddings updated successfully in 0.77 seconds
+2025-05-07 17:04:30,667 - __main__ - INFO - Embedding shape: (4, 768)
+2025-05-07 17:04:30,667 - __main__ - INFO - Adding section: Test 4 - Page 5
+2025-05-07 17:04:30,667 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 5, length=1352
+2025-05-07 17:04:30,667 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+3 
+Handedness, a preferential use of either the right or 
+left hand,...
+2025-05-07 17:04:30,668 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:30,668 - __main__ - INFO - Updating embeddings for 5 documents
+2025-05-07 17:04:31,574 - __main__ - INFO - Embeddings updated successfully in 0.91 seconds
+2025-05-07 17:04:31,574 - __main__ - INFO - Embedding shape: (5, 768)
+2025-05-07 17:04:31,574 - __main__ - INFO - Adding section: Test 4 - Page 6
+2025-05-07 17:04:31,576 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 6, length=2476
+2025-05-07 17:04:31,576 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+5 
+The following text is adapted from Susan Glaspell’s 
+1912 short s...
+2025-05-07 17:04:31,576 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:31,576 - __main__ - INFO - Updating embeddings for 6 documents
+2025-05-07 17:04:32,708 - __main__ - INFO - Embeddings updated successfully in 1.13 seconds
+2025-05-07 17:04:32,708 - __main__ - INFO - Embedding shape: (6, 768)
+2025-05-07 17:04:32,708 - __main__ - INFO - Adding section: Test 4 - Page 7
+2025-05-07 17:04:32,708 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 7, length=2529
+2025-05-07 17:04:32,708 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+7 
+The following text is from Walt Whitman’s 1860 
+poem “Calamus 24....
+2025-05-07 17:04:32,709 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:32,709 - __main__ - INFO - Updating embeddings for 7 documents
+2025-05-07 17:04:34,012 - __main__ - INFO - Embeddings updated successfully in 1.30 seconds
+2025-05-07 17:04:34,013 - __main__ - INFO - Embedding shape: (7, 768)
+2025-05-07 17:04:34,013 - __main__ - INFO - Adding section: Test 4 - Page 8
+2025-05-07 17:04:34,013 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 8, length=2746
+2025-05-07 17:04:34,013 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+9 
+Text 1 
+Conventional wisdom long held that human 
+social systems ...
+2025-05-07 17:04:34,013 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:34,013 - __main__ - INFO - Updating embeddings for 8 documents
+2025-05-07 17:04:35,473 - __main__ - INFO - Embeddings updated successfully in 1.46 seconds
+2025-05-07 17:04:35,473 - __main__ - INFO - Embedding shape: (8, 768)
+2025-05-07 17:04:35,473 - __main__ - INFO - Adding section: Test 4 - Page 9
+2025-05-07 17:04:35,473 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 9, length=2138
+2025-05-07 17:04:35,473 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+11 
+The following text is from Ezra Pound’s 1909 poem 
+“Hymn III,” b...
+2025-05-07 17:04:35,473 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:35,473 - __main__ - INFO - Updating embeddings for 9 documents
+2025-05-07 17:04:37,112 - __main__ - INFO - Embeddings updated successfully in 1.64 seconds
+2025-05-07 17:04:37,112 - __main__ - INFO - Embedding shape: (9, 768)
+2025-05-07 17:04:37,112 - __main__ - INFO - Adding section: Test 4 - Page 10
+2025-05-07 17:04:37,113 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 10, length=2771
+2025-05-07 17:04:37,113 - __main__ - INFO - Document preview: SAT Practice Test 4: ---
+US States with the Greatest Number of 
+Organic Farms in 2016 
+   State 
+Mod...
+2025-05-07 17:04:37,113 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:04:37,113 - __main__ - INFO - Updating embeddings for 11 documents
+2025-05-07 17:04:39,262 - __main__ - INFO - Embeddings updated successfully in 2.15 seconds
+2025-05-07 17:04:39,262 - __main__ - INFO - Embedding shape: (11, 768)
+2025-05-07 17:04:39,262 - __main__ - INFO - Adding section: Test 4 - Page 11
+2025-05-07 17:04:39,262 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 11, length=3365
+2025-05-07 17:04:39,262 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+--- ---
+I 
+I I I I I 
+15 
+Ablation Rates for Three Elements in Cosmi...
+2025-05-07 17:04:39,262 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:04:39,262 - __main__ - INFO - Updating embeddings for 13 documents
+2025-05-07 17:04:41,750 - __main__ - INFO - Embeddings updated successfully in 2.49 seconds
+2025-05-07 17:04:41,750 - __main__ - INFO - Embedding shape: (13, 768)
+2025-05-07 17:04:41,750 - __main__ - INFO - Adding section: Test 4 - Page 12
+2025-05-07 17:04:41,750 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 12, length=1814
+2025-05-07 17:04:41,751 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+-----
+17 
+Effects of Mycorrhizal Fungi on 3 Plant Species 
+Plant 
+sp...
+2025-05-07 17:04:41,751 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:04:41,751 - __main__ - INFO - Updating embeddings for 15 documents
+2025-05-07 17:04:44,602 - __main__ - INFO - Embeddings updated successfully in 2.85 seconds
+2025-05-07 17:04:44,602 - __main__ - INFO - Embedding shape: (15, 768)
+2025-05-07 17:04:44,602 - __main__ - INFO - Adding section: Test 4 - Page 13
+2025-05-07 17:04:44,602 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 13, length=2593
+2025-05-07 17:04:44,602 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+18 
+Several artworks found among the ruins of the 
+ancient Roman cit...
+2025-05-07 17:04:44,602 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:04:44,602 - __main__ - INFO - Updating embeddings for 17 documents
+2025-05-07 17:04:47,849 - __main__ - INFO - Embeddings updated successfully in 3.25 seconds
+2025-05-07 17:04:47,849 - __main__ - INFO - Embedding shape: (17, 768)
+2025-05-07 17:04:47,850 - __main__ - INFO - Adding section: Test 4 - Page 14
+2025-05-07 17:04:47,850 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 14, length=2573
+2025-05-07 17:04:47,850 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+.......................................................................
+2025-05-07 17:04:47,850 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:04:47,850 - __main__ - INFO - Updating embeddings for 19 documents
+2025-05-07 17:04:51,524 - __main__ - INFO - Embeddings updated successfully in 3.67 seconds
+2025-05-07 17:04:51,524 - __main__ - INFO - Embedding shape: (19, 768)
+2025-05-07 17:04:51,524 - __main__ - INFO - Adding section: Test 4 - Page 15
+2025-05-07 17:04:51,524 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 15, length=2579
+2025-05-07 17:04:51,524 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+- - ~  ---~ 
+---~ 
+26 
+Sociologist Alton Okinaka sits on the review ...
+2025-05-07 17:04:51,524 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:51,524 - __main__ - INFO - Updating embeddings for 20 documents
+2025-05-07 17:04:55,331 - __main__ - INFO - Embeddings updated successfully in 3.81 seconds
+2025-05-07 17:04:55,331 - __main__ - INFO - Embedding shape: (20, 768)
+2025-05-07 17:04:55,331 - __main__ - INFO - Adding section: Test 4 - Page 16
+2025-05-07 17:04:55,331 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 16, length=2329
+2025-05-07 17:04:55,331 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+30 
+In 2019, researcher Patricia Jurado Gonzalez and 
+food historian...
+2025-05-07 17:04:55,331 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:55,332 - __main__ - INFO - Updating embeddings for 21 documents
+2025-05-07 17:04:59,444 - __main__ - INFO - Embeddings updated successfully in 4.11 seconds
+2025-05-07 17:04:59,444 - __main__ - INFO - Embedding shape: (21, 768)
+2025-05-07 17:04:59,444 - __main__ - INFO - Adding section: Test 4 - Page 17
+2025-05-07 17:04:59,444 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 17, length=2869
+2025-05-07 17:04:59,444 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+32 
+While researching a topic, a student has taken the 
+following no...
+2025-05-07 17:04:59,444 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:04:59,444 - __main__ - INFO - Updating embeddings for 22 documents
+2025-05-07 17:05:03,629 - __main__ - INFO - Embeddings updated successfully in 4.18 seconds
+2025-05-07 17:05:03,629 - __main__ - INFO - Embedding shape: (22, 768)
+2025-05-07 17:05:03,629 - __main__ - INFO - Adding section: Test 4 - 33 QUESTIONS
+2025-05-07 17:05:03,629 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - 33 QUESTIONS, length=1736
+2025-05-07 17:05:03,629 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+Reading and Writing 
+33 QUESTIONS 
+DIRECTIONS 
+The questions in this...
+2025-05-07 17:05:03,629 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:05:03,630 - __main__ - INFO - Updating embeddings for 23 documents
+2025-05-07 17:05:07,928 - __main__ - INFO - Embeddings updated successfully in 4.30 seconds
+2025-05-07 17:05:07,928 - __main__ - INFO - Embedding shape: (23, 768)
+2025-05-07 17:05:07,928 - __main__ - INFO - Adding section: Test 4 - Page 19
+2025-05-07 17:05:07,928 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 19, length=2299
+2025-05-07 17:05:07,928 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+- - ~  ---~ 
+---~ 
+3 
+Particle physicists like Ayana Holloway Arce a...
+2025-05-07 17:05:07,929 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:05:07,929 - __main__ - INFO - Updating embeddings for 25 documents
+2025-05-07 17:05:12,980 - __main__ - INFO - Embeddings updated successfully in 5.05 seconds
+2025-05-07 17:05:12,980 - __main__ - INFO - Embedding shape: (25, 768)
+2025-05-07 17:05:12,980 - __main__ - INFO - Adding section: Test 4 - Page 20
+2025-05-07 17:05:12,980 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 20, length=1329
+2025-05-07 17:05:12,980 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+7 
+In addition to being an accomplished psychologist 
+himself, Franc...
+2025-05-07 17:05:12,981 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:05:12,981 - __main__ - INFO - Updating embeddings for 27 documents
+2025-05-07 17:05:18,524 - __main__ - INFO - Embeddings updated successfully in 5.54 seconds
+2025-05-07 17:05:18,524 - __main__ - INFO - Embedding shape: (27, 768)
+2025-05-07 17:05:18,524 - __main__ - INFO - Adding section: Test 4 - Page 21
+2025-05-07 17:05:18,524 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 21, length=2482
+2025-05-07 17:05:18,524 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+------~ ------~ 
+9 
+Some bird species don’t raise their own chicks. ...
+2025-05-07 17:05:18,524 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:05:18,524 - __main__ - INFO - Updating embeddings for 28 documents
+2025-05-07 17:05:24,282 - __main__ - INFO - Embeddings updated successfully in 5.76 seconds
+2025-05-07 17:05:24,282 - __main__ - INFO - Embedding shape: (28, 768)
+2025-05-07 17:05:24,283 - __main__ - INFO - Adding section: Test 4 - Page 22
+2025-05-07 17:05:24,283 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 22, length=2938
+2025-05-07 17:05:24,283 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+11 
+A student performs an experiment testing her 
+hypothesis that a ...
+2025-05-07 17:05:24,283 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:05:24,283 - __main__ - INFO - Updating embeddings for 30 documents
+2025-05-07 17:05:30,596 - __main__ - INFO - Embeddings updated successfully in 6.31 seconds
+2025-05-07 17:05:30,597 - __main__ - INFO - Embedding shape: (30, 768)
+2025-05-07 17:05:30,597 - __main__ - INFO - Adding section: Test 4 - Page 23
+2025-05-07 17:05:30,597 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 23, length=2004
+2025-05-07 17:05:30,597 - __main__ - INFO - Document preview: SAT Practice Test 4: 200
+150
+100
+50
+0
+Uncertainty
+(larger values = more uncertainty)
+  2005
+  2006
+ ...
+2025-05-07 17:05:30,597 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:05:30,597 - __main__ - INFO - Updating embeddings for 32 documents
+2025-05-07 17:05:37,489 - __main__ - INFO - Embeddings updated successfully in 6.89 seconds
+2025-05-07 17:05:37,490 - __main__ - INFO - Embedding shape: (32, 768)
+2025-05-07 17:05:37,490 - __main__ - INFO - Adding section: Test 4 - Page 24
+2025-05-07 17:05:37,490 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 24, length=3521
+2025-05-07 17:05:37,490 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+.......................................................................
+2025-05-07 17:05:37,490 - __main__ - INFO - Added 3 chunks from document
+2025-05-07 17:05:37,490 - __main__ - INFO - Updating embeddings for 35 documents
+2025-05-07 17:05:56,742 - __main__ - INFO - Embeddings updated successfully in 19.25 seconds
+2025-05-07 17:05:56,742 - __main__ - INFO - Embedding shape: (35, 768)
+2025-05-07 17:05:56,743 - __main__ - INFO - Adding section: Test 4 - Page 25
+2025-05-07 17:05:56,743 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 25, length=3163
+2025-05-07 17:05:56,743 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+17 
+Ancestral Puebloans, the civilization from which 
+present-day Pu...
+2025-05-07 17:05:56,746 - __main__ - INFO - Added 3 chunks from document
+2025-05-07 17:05:56,746 - __main__ - INFO - Updating embeddings for 38 documents
+2025-05-07 17:06:13,697 - __main__ - INFO - Embeddings updated successfully in 16.95 seconds
+2025-05-07 17:06:13,697 - __main__ - INFO - Embedding shape: (38, 768)
+2025-05-07 17:06:13,697 - __main__ - INFO - Adding section: Test 4 - Page 26
+2025-05-07 17:06:13,697 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 26, length=2372
+2025-05-07 17:06:13,697 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+.......................................................................
+2025-05-07 17:06:13,698 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:06:13,698 - __main__ - INFO - Updating embeddings for 40 documents
+2025-05-07 17:06:20,668 - __main__ - INFO - Embeddings updated successfully in 6.97 seconds
+2025-05-07 17:06:20,668 - __main__ - INFO - Embedding shape: (40, 768)
+2025-05-07 17:06:20,668 - __main__ - INFO - Adding section: Test 4 - Page 27
+2025-05-07 17:06:20,669 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 27, length=2244
+2025-05-07 17:06:20,669 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+24 
+Working from an earlier discovery of Charpentier’s, 
+chemists Em...
+2025-05-07 17:06:20,669 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:06:20,669 - __main__ - INFO - Updating embeddings for 42 documents
+2025-05-07 17:06:28,192 - __main__ - INFO - Embeddings updated successfully in 7.52 seconds
+2025-05-07 17:06:28,192 - __main__ - INFO - Embedding shape: (42, 768)
+2025-05-07 17:06:28,192 - __main__ - INFO - Adding section: Test 4 - Page 28
+2025-05-07 17:06:28,192 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 28, length=2698
+2025-05-07 17:06:28,192 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+27 
+During a 2021 launch, Rocket Labs’ Electron rocket 
+experienced ...
+2025-05-07 17:06:28,192 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:06:28,193 - __main__ - INFO - Updating embeddings for 44 documents
+2025-05-07 17:06:35,524 - __main__ - INFO - Embeddings updated successfully in 7.33 seconds
+2025-05-07 17:06:35,524 - __main__ - INFO - Embedding shape: (44, 768)
+2025-05-07 17:06:35,524 - __main__ - INFO - Adding section: Test 4 - Page 29
+2025-05-07 17:06:35,524 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 29, length=3203
+2025-05-07 17:06:35,524 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+30 
+While researching a topic, a student has taken the 
+following no...
+2025-05-07 17:06:35,524 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:06:35,524 - __main__ - INFO - Updating embeddings for 45 documents
+2025-05-07 17:06:43,160 - __main__ - INFO - Embeddings updated successfully in 7.64 seconds
+2025-05-07 17:06:43,160 - __main__ - INFO - Embedding shape: (45, 768)
+2025-05-07 17:06:43,160 - __main__ - INFO - Adding section: Test 4 - Page 30
+2025-05-07 17:06:43,160 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 30, length=2981
+2025-05-07 17:06:43,161 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+32 
+Unauthorized copying or reuse of any part of this page is illega...
+2025-05-07 17:06:43,161 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:06:43,161 - __main__ - INFO - Updating embeddings for 46 documents
+2025-05-07 17:06:51,199 - __main__ - INFO - Embeddings updated successfully in 8.04 seconds
+2025-05-07 17:06:51,199 - __main__ - INFO - Embedding shape: (46, 768)
+2025-05-07 17:06:51,199 - __main__ - INFO - Adding section: Test 4 - Page 31
+2025-05-07 17:06:51,199 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 31, length=52
+2025-05-07 17:06:51,199 - __main__ - INFO - Document preview: SAT Practice Test 4: No Test Material On This Page 
+...
+2025-05-07 17:06:51,199 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:06:51,199 - __main__ - INFO - Updating embeddings for 47 documents
+2025-05-07 17:06:59,322 - __main__ - INFO - Embeddings updated successfully in 8.12 seconds
+2025-05-07 17:06:59,322 - __main__ - INFO - Embedding shape: (47, 768)
+2025-05-07 17:06:59,322 - __main__ - INFO - Adding section: Test 4 - 27 QUESTIONS
+2025-05-07 17:06:59,322 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - 27 QUESTIONS, length=936
+2025-05-07 17:06:59,322 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+Math 
+27 QUESTIONS 
+DIRECTIONS
+The questions in this section address...
+2025-05-07 17:06:59,323 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:06:59,323 - __main__ - INFO - Updating embeddings for 49 documents
+2025-05-07 17:07:07,828 - __main__ - INFO - Embeddings updated successfully in 8.50 seconds
+2025-05-07 17:07:07,829 - __main__ - INFO - Embedding shape: (49, 768)
+2025-05-07 17:07:07,829 - __main__ - INFO - Adding section: Test 4 - Page 33
+2025-05-07 17:07:07,829 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 33, length=1561
+2025-05-07 17:07:07,829 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+For multiple-choice questions, solve each problem, choose the correc...
+2025-05-07 17:07:07,829 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:07:07,829 - __main__ - INFO - Updating embeddings for 51 documents
+2025-05-07 17:07:16,708 - __main__ - INFO - Embeddings updated successfully in 8.88 seconds
+2025-05-07 17:07:16,708 - __main__ - INFO - Embedding shape: (51, 768)
+2025-05-07 17:07:16,708 - __main__ - INFO - Adding section: Test 4 - Page 34
+2025-05-07 17:07:16,708 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 34, length=1172
+2025-05-07 17:07:16,708 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+-
+-
+50 
+45 
+</l 40 
+..., 
+Q 
+<l> 35 
+"O 
+::s 30 
+..., 
+</l 
+...... 2...
+2025-05-07 17:07:16,708 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:07:16,708 - __main__ - INFO - Updating embeddings for 53 documents
+2025-05-07 17:07:27,649 - __main__ - INFO - Embeddings updated successfully in 10.94 seconds
+2025-05-07 17:07:27,649 - __main__ - INFO - Embedding shape: (53, 768)
+2025-05-07 17:07:27,649 - __main__ - INFO - Adding section: Test 4 - Page 35
+2025-05-07 17:07:27,649 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 35, length=1977
+2025-05-07 17:07:27,650 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+----------
+---------- -----
+Q 
+P ___ 
+....._.R S~: 
+----------
+5 
+Ha...
+2025-05-07 17:07:27,650 - __main__ - INFO - Added 3 chunks from document
+2025-05-07 17:07:27,650 - __main__ - INFO - Updating embeddings for 56 documents
+2025-05-07 17:07:39,152 - __main__ - INFO - Embeddings updated successfully in 11.50 seconds
+2025-05-07 17:07:39,152 - __main__ - INFO - Embedding shape: (56, 768)
+2025-05-07 17:07:39,152 - __main__ - INFO - Adding section: Test 4 - Page 36
+2025-05-07 17:07:39,152 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 36, length=1946
+2025-05-07 17:07:39,152 - __main__ - INFO - Document preview: SAT Practice Test 4: 10 
+..............................................................................
+2025-05-07 17:07:39,152 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:07:39,152 - __main__ - INFO - Updating embeddings for 57 documents
+2025-05-07 17:07:50,932 - __main__ - INFO - Embeddings updated successfully in 11.78 seconds
+2025-05-07 17:07:50,932 - __main__ - INFO - Embedding shape: (57, 768)
+2025-05-07 17:07:50,932 - __main__ - INFO - Adding section: Test 4 - Page 37
+2025-05-07 17:07:50,932 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 37, length=2063
+2025-05-07 17:07:50,933 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+1 
+------~ ------~ 
+------~ 
+15 
+Line t in the x y-plane has a slope of...
+2025-05-07 17:07:50,933 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:07:50,933 - __main__ - INFO - Updating embeddings for 58 documents
+2025-05-07 17:08:02,898 - __main__ - INFO - Embeddings updated successfully in 11.97 seconds
+2025-05-07 17:08:02,898 - __main__ - INFO - Embedding shape: (58, 768)
+2025-05-07 17:08:02,898 - __main__ - INFO - Adding section: Test 4 - Page 38
+2025-05-07 17:08:02,898 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 38, length=1473
+2025-05-07 17:08:02,898 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+---------~ 
+F 
+---------~ 
+---------~ 
+1 
+-------
+---------~ 
+............
+2025-05-07 17:08:02,898 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:08:02,898 - __main__ - INFO - Updating embeddings for 59 documents
+2025-05-07 17:08:15,193 - __main__ - INFO - Embeddings updated successfully in 12.29 seconds
+2025-05-07 17:08:15,193 - __main__ - INFO - Embedding shape: (59, 768)
+2025-05-07 17:08:15,193 - __main__ - INFO - Adding section: Test 4 - Page 39
+2025-05-07 17:08:15,193 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 39, length=1470
+2025-05-07 17:08:15,213 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:08:15,213 - __main__ - INFO - Updating embeddings for 60 documents
+2025-05-07 17:08:27,964 - __main__ - INFO - Embeddings updated successfully in 12.75 seconds
+2025-05-07 17:08:27,964 - __main__ - INFO - Embedding shape: (60, 768)
+2025-05-07 17:08:27,964 - __main__ - INFO - Adding section: Test 4 - 27 QUESTIONS
+2025-05-07 17:08:27,964 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - 27 QUESTIONS, length=937
+2025-05-07 17:08:27,964 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+Math 
+27 QUESTIONS 
+DIRECTIONS
+The questions in this section address...
+2025-05-07 17:08:27,965 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:08:27,965 - __main__ - INFO - Updating embeddings for 62 documents
+2025-05-07 17:08:40,991 - __main__ - INFO - Embeddings updated successfully in 13.03 seconds
+2025-05-07 17:08:40,991 - __main__ - INFO - Embedding shape: (62, 768)
+2025-05-07 17:08:40,991 - __main__ - INFO - Adding section: Test 4 - Page 41
+2025-05-07 17:08:40,991 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 41, length=1560
+2025-05-07 17:08:40,991 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+For multiple-choice questions, solve each problem, choose the correc...
+2025-05-07 17:08:40,991 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:08:40,991 - __main__ - INFO - Updating embeddings for 63 documents
+2025-05-07 17:08:54,226 - __main__ - INFO - Embeddings updated successfully in 13.23 seconds
+2025-05-07 17:08:54,226 - __main__ - INFO - Embedding shape: (63, 768)
+2025-05-07 17:08:54,226 - __main__ - INFO - Adding section: Test 4 - Page 42
+2025-05-07 17:08:54,226 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 42, length=1121
+2025-05-07 17:08:54,226 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+---------~ ---------~ 
+I \ 
+I '\ I ' 
+/ ' 
+I 
+-
+---------~ 
+--------...
+2025-05-07 17:08:54,226 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:08:54,226 - __main__ - INFO - Updating embeddings for 64 documents
+2025-05-07 17:09:07,846 - __main__ - INFO - Embeddings updated successfully in 13.62 seconds
+2025-05-07 17:09:07,846 - __main__ - INFO - Embedding shape: (64, 768)
+2025-05-07 17:09:07,846 - __main__ - INFO - Adding section: Test 4 - Page 43
+2025-05-07 17:09:07,846 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 43, length=1221
+2025-05-07 17:09:07,846 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+----- -----
+-----
+5 
+The point (8, 2) in the x y-plane is a solution...
+2025-05-07 17:09:07,846 - __main__ - INFO - Added 2 chunks from document
+2025-05-07 17:09:07,846 - __main__ - INFO - Updating embeddings for 66 documents
+2025-05-07 17:09:21,385 - __main__ - INFO - Embeddings updated successfully in 13.54 seconds
+2025-05-07 17:09:21,386 - __main__ - INFO - Embedding shape: (66, 768)
+2025-05-07 17:09:21,386 - __main__ - INFO - Adding section: Test 4 - Page 44
+2025-05-07 17:09:21,386 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 44, length=2038
+2025-05-07 17:09:21,386 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+--- ---
+---
+---
+I 
+I I I 
+I I 
+---
+10 
+To estimate the proportion of...
+2025-05-07 17:09:21,386 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:09:21,386 - __main__ - INFO - Updating embeddings for 67 documents
+2025-05-07 17:09:34,684 - __main__ - INFO - Embeddings updated successfully in 13.30 seconds
+2025-05-07 17:09:34,685 - __main__ - INFO - Embedding shape: (67, 768)
+2025-05-07 17:09:34,685 - __main__ - INFO - Adding section: Test 4 - Page 45
+2025-05-07 17:09:34,685 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 45, length=1351
+2025-05-07 17:09:34,685 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+---------- ----------
+-
+t 
+m 
+n 
+15 
+A proposal for a new library wa...
+2025-05-07 17:09:34,685 - __main__ - INFO - Added 3 chunks from document
+2025-05-07 17:09:34,686 - __main__ - INFO - Updating embeddings for 70 documents
+2025-05-07 17:09:48,333 - __main__ - INFO - Embeddings updated successfully in 13.65 seconds
+2025-05-07 17:09:48,333 - __main__ - INFO - Embedding shape: (70, 768)
+2025-05-07 17:09:48,333 - __main__ - INFO - Adding section: Test 4 - Page 46
+2025-05-07 17:09:48,333 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 46, length=1721
+2025-05-07 17:09:48,334 - __main__ - INFO - Added 3 chunks from document
+2025-05-07 17:09:48,334 - __main__ - INFO - Updating embeddings for 73 documents
+2025-05-07 17:10:01,770 - __main__ - INFO - Embeddings updated successfully in 13.44 seconds
+2025-05-07 17:10:01,770 - __main__ - INFO - Embedding shape: (73, 768)
+2025-05-07 17:10:01,770 - __main__ - INFO - Adding section: Test 4 - Page 47
+2025-05-07 17:10:01,771 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 47, length=1550
+2025-05-07 17:10:01,771 - __main__ - INFO - Document preview: SAT Practice Test 4: Module 
+2 
+-
+-
+Data Set A 
+• • • 
+• • • 
+• • • • 
+• • • • • 
+22 23 24 25 26 
+23...
+2025-05-07 17:10:01,771 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:10:01,771 - __main__ - INFO - Updating embeddings for 74 documents
+2025-05-07 17:10:15,053 - __main__ - INFO - Embeddings updated successfully in 13.28 seconds
+2025-05-07 17:10:15,053 - __main__ - INFO - Embedding shape: (74, 768)
+2025-05-07 17:10:15,053 - __main__ - INFO - Adding section: Test 4 - Page 48
+2025-05-07 17:10:15,053 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 48, length=1238
+2025-05-07 17:10:15,053 - __main__ - INFO - Document preview: SAT Practice Test 4:  
+Module 
+2 
+------~ ------~ 
+------~ 
+25 
+.......................................
+2025-05-07 17:10:15,054 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:10:15,054 - __main__ - INFO - Updating embeddings for 75 documents
+2025-05-07 17:10:28,520 - __main__ - INFO - Embeddings updated successfully in 13.47 seconds
+2025-05-07 17:10:28,521 - __main__ - INFO - Embedding shape: (75, 768)
+2025-05-07 17:10:28,521 - __main__ - INFO - Adding section: Test 4 - Page 49
+2025-05-07 17:10:28,521 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 49, length=52
+2025-05-07 17:10:28,521 - __main__ - INFO - Document preview: SAT Practice Test 4: No Test Material On This Page 
+...
+2025-05-07 17:10:28,521 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:10:28,521 - __main__ - INFO - Updating embeddings for 76 documents
+2025-05-07 17:10:42,140 - __main__ - INFO - Embeddings updated successfully in 13.62 seconds
+2025-05-07 17:10:42,141 - __main__ - INFO - Embedding shape: (76, 768)
+2025-05-07 17:10:42,141 - __main__ - INFO - Adding section: Test 4 - Page 50
+2025-05-07 17:10:42,141 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 50, length=52
+2025-05-07 17:10:42,141 - __main__ - INFO - Document preview: SAT Practice Test 4: No Test Material On This Page 
+...
+2025-05-07 17:10:42,141 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:10:42,141 - __main__ - INFO - Updating embeddings for 77 documents
+2025-05-07 17:10:55,758 - __main__ - INFO - Embeddings updated successfully in 13.62 seconds
+2025-05-07 17:10:55,758 - __main__ - INFO - Embedding shape: (77, 768)
+2025-05-07 17:10:55,758 - __main__ - INFO - Adding section: Test 4 - Page 51
+2025-05-07 17:10:55,758 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 51, length=52
+2025-05-07 17:10:55,758 - __main__ - INFO - Document preview: SAT Practice Test 4: No Test Material On This Page 
+...
+2025-05-07 17:10:55,758 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:10:55,758 - __main__ - INFO - Updating embeddings for 78 documents
+2025-05-07 17:11:09,317 - __main__ - INFO - Embeddings updated successfully in 13.56 seconds
+2025-05-07 17:11:09,317 - __main__ - INFO - Embedding shape: (78, 768)
+2025-05-07 17:11:09,318 - __main__ - INFO - Adding section: Test 4 - Page 52
+2025-05-07 17:11:09,318 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 52, length=52
+2025-05-07 17:11:09,318 - __main__ - INFO - Document preview: SAT Practice Test 4: No Test Material On This Page 
+...
+2025-05-07 17:11:09,318 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:11:09,318 - __main__ - INFO - Updating embeddings for 79 documents
+2025-05-07 17:11:22,952 - __main__ - INFO - Embeddings updated successfully in 13.63 seconds
+2025-05-07 17:11:22,952 - __main__ - INFO - Embedding shape: (79, 768)
+2025-05-07 17:11:22,952 - __main__ - INFO - Adding section: Test 4 - Page 53
+2025-05-07 17:11:22,952 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 53, length=52
+2025-05-07 17:11:22,952 - __main__ - INFO - Document preview: SAT Practice Test 4: No Test Material On This Page 
+...
+2025-05-07 17:11:22,952 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:11:22,952 - __main__ - INFO - Updating embeddings for 80 documents
+2025-05-07 17:11:36,658 - __main__ - INFO - Embeddings updated successfully in 13.71 seconds
+2025-05-07 17:11:36,658 - __main__ - INFO - Embedding shape: (80, 768)
+2025-05-07 17:11:36,658 - __main__ - INFO - Adding section: Test 4 - Page 54
+2025-05-07 17:11:36,658 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 54, length=52
+2025-05-07 17:11:36,658 - __main__ - INFO - Document preview: SAT Practice Test 4: No Test Material On This Page 
+...
+2025-05-07 17:11:36,658 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:11:36,658 - __main__ - INFO - Updating embeddings for 81 documents
+2025-05-07 17:11:50,479 - __main__ - INFO - Embeddings updated successfully in 13.82 seconds
+2025-05-07 17:11:50,480 - __main__ - INFO - Embedding shape: (81, 768)
+2025-05-07 17:11:50,480 - __main__ - INFO - Adding section: Test 4 - Page 55
+2025-05-07 17:11:50,480 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Page 55, length=52
+2025-05-07 17:11:50,480 - __main__ - INFO - Document preview: SAT Practice Test 4: No Test Material On This Page 
+...
+2025-05-07 17:11:50,480 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:11:50,480 - __main__ - INFO - Updating embeddings for 82 documents
+2025-05-07 17:12:04,478 - __main__ - INFO - Embeddings updated successfully in 14.00 seconds
+2025-05-07 17:12:04,478 - __main__ - INFO - Embedding shape: (82, 768)
+2025-05-07 17:12:04,478 - __main__ - INFO - Adding section: Test 4 - Math
+2025-05-07 17:12:04,478 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Math, length=1162
+2025-05-07 17:12:04,478 - __main__ - INFO - Document preview: SAT Practice Test 4: WF2P0019
+II I II II I II I IIIII II I 111111111111111 
+. College Board, SAT, an...
+2025-05-07 17:12:04,478 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:12:04,478 - __main__ - INFO - Updating embeddings for 83 documents
+2025-05-07 17:12:18,649 - __main__ - INFO - Embeddings updated successfully in 14.17 seconds
+2025-05-07 17:12:18,649 - __main__ - INFO - Embedding shape: (83, 768)
+2025-05-07 17:12:18,649 - __main__ - INFO - Adding key term documents for Test 4
+2025-05-07 17:12:18,649 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Math, length=500
+2025-05-07 17:12:18,649 - __main__ - INFO - Document preview: SAT Practice Test 4 MATH SECTION: The SAT math section includes algebra, problem solving, and advanc...
+2025-05-07 17:12:18,649 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:12:18,649 - __main__ - INFO - Updating embeddings for 84 documents
+2025-05-07 17:12:32,924 - __main__ - INFO - Embeddings updated successfully in 14.27 seconds
+2025-05-07 17:12:32,924 - __main__ - INFO - Embedding shape: (84, 768)
+2025-05-07 17:12:32,924 - __main__ - INFO - Adding document: type=practice_test, section=Test 4 - Reading and Writing, length=537
+2025-05-07 17:12:32,924 - __main__ - INFO - Document preview: READING PASSAGES SAT Test 4: Reading comprehension passages on the SAT include literature, social sc...
+2025-05-07 17:12:32,924 - __main__ - INFO - Added 1 chunks from document
+2025-05-07 17:12:32,924 - __main__ - INFO - Updating embeddings for 85 documents
+2025-05-07 17:12:47,427 - __main__ - INFO - Embeddings updated successfully in 14.50 seconds
+2025-05-07 17:12:47,427 - __main__ - INFO - Embedding shape: (85, 768)
+2025-05-07 17:12:47,822 - __main__ - INFO - Vector database saved to rag_data (85 documents)
+2025-05-07 17:12:47,822 - __main__ - INFO - Added 85 documents from practice_test_4
+2025-05-07 17:12:47,822 - __main__ - INFO - Total documents in database: 85
+2025-05-07 17:12:47,822 - __main__ - INFO - Testing search quality...
+2025-05-07 17:12:47,822 - __main__ - INFO - Searching for query: 'SAT MATH SECTION', type=None, section=None
+2025-05-07 17:12:47,853 - __main__ - INFO - Top search result similarity: 0.7211
+2025-05-07 17:12:47,853 - __main__ - INFO - Top result preview: SAT Practice Test 4:...
+2025-05-07 17:12:47,853 - __main__ - INFO - Searching for query: 'READING PASSAGES SAT', type=None, section=None
+2025-05-07 17:12:47,880 - __main__ - INFO - Top search result similarity: 0.7216
+2025-05-07 17:12:47,880 - __main__ - INFO - Top result preview: READING PASSAGES SAT Test 4: Reading comprehension...
+2025-05-07 17:12:47,880 - __main__ - INFO - Searching for query: 'Test 4 math', type=None, section=None
+2025-05-07 17:12:47,909 - __main__ - INFO - Top search result similarity: 0.6702
+2025-05-07 17:12:47,909 - __main__ - INFO - Top result preview: SAT Practice Test 4:...
+2025-05-07 17:12:47,909 - __main__ - INFO - Searching for query: 'Test 4 reading', type=None, section=None
+2025-05-07 17:12:47,942 - __main__ - INFO - Top search result similarity: 0.6247
+2025-05-07 17:12:47,943 - __main__ - INFO - Top result preview: READING PASSAGES SAT Test 4: Reading comprehension...
+2025-05-07 17:12:47,943 - __main__ - INFO - Search quality test complete. Success rate: 75.00%
+2025-05-07 17:12:47,943 - __main__ - INFO - Average similarity: 0.6844
+2025-05-07 17:12:47,944 - __main__ - INFO -   Similarity: 0.7211
+2025-05-07 17:12:47,944 - __main__ - INFO -   Type: practice_test (Expected: practice_test)
+2025-05-07 17:12:47,945 - __main__ - INFO -   Section: Test 4 - Page 2 (Expected: Math)
+2025-05-07 17:12:47,948 - __main__ - INFO -   Similarity: 0.7216
+2025-05-07 17:12:47,948 - __main__ - INFO -   Type: practice_test (Expected: practice_test)
+2025-05-07 17:12:47,948 - __main__ - INFO -   Section: Test 4 - Reading and Writing (Expected: Reading)
+2025-05-07 17:12:47,950 - __main__ - INFO -   Similarity: 0.6702
+2025-05-07 17:12:47,950 - __main__ - INFO -   Type: practice_test (Expected: practice_test)
+2025-05-07 17:12:47,950 - __main__ - INFO -   Section: Test 4 - Page 2 (Expected: Test 4)
+2025-05-07 17:12:47,952 - __main__ - INFO -   Similarity: 0.6247
+2025-05-07 17:12:47,952 - __main__ - INFO -   Type: practice_test (Expected: practice_test)
+2025-05-07 17:12:47,953 - __main__ - INFO -   Section: Test 4 - Reading and Writing (Expected: Test 4)
+2025-05-07 17:12:47,953 - __main__ - INFO - Search quality after adding practice_test_4: 75.00% success rate
+2025-05-07 17:12:47,953 - __main__ - INFO - Searching for query: 'SAT MATH SECTION', type=None, section=None
+2025-05-07 17:12:47,986 - __main__ - INFO - Top search result similarity: 0.7211
+2025-05-07 17:12:47,986 - __main__ - INFO - Top result preview: SAT Practice Test 4:...
+2025-05-07 17:12:47,986 - __main__ - INFO - Searching for query: 'READING PASSAGES SAT', type=None, section=None
+2025-05-07 17:12:48,013 - __main__ - INFO - Top search result similarity: 0.7216
+2025-05-07 17:12:48,013 - __main__ - INFO - Top result preview: READING PASSAGES SAT Test 4: Reading comprehension...
+2025-05-07 17:12:48,013 - __main__ - INFO - Searching for query: 'Test 4 math', type=None, section=None
+2025-05-07 17:12:48,039 - __main__ - INFO - Top search result similarity: 0.6702
+2025-05-07 17:12:48,040 - __main__ - INFO - Top result preview: SAT Practice Test 4:...
+2025-05-07 17:12:48,040 - __main__ - INFO - Searching for query: 'Test 4 reading', type=None, section=None
+2025-05-07 17:12:48,066 - __main__ - INFO - Top search result similarity: 0.6247
+2025-05-07 17:12:48,066 - __main__ - INFO - Top result preview: READING PASSAGES SAT Test 4: Reading comprehension...
